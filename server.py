@@ -27,7 +27,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         latest_message = pickle.loads(self.request.recv(1024).strip())
         sender = latest_message["sender"]
         if latest_message["is_service"] and latest_message["msg"] == "get_update":
-            print("service message received")
+            print(LATEST_MSG_IDX_BY_SENDER)
             if sender in LATEST_MSG_IDX_BY_SENDER:
                 messages = pickle.dumps(
                     MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender]:]
