@@ -27,7 +27,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         # just send back the same data, but upper-cased
 
         messages = pickle.dumps(
-            self.data[self.latest_msg_idx_by_sender[sender]:]
+            self.data[self.latest_msg_idx_by_sender[sender]-1:]
         )
         self.request.sendall(messages)
 

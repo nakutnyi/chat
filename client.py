@@ -21,7 +21,7 @@ while True:
 
         data = pickle.dumps({'text': mes, 'sender': args.name})
         s.sendall(data)
-        data = s.recv(1024)
-        new_data = pickle.loads(data)
+        messages = pickle.loads(s.recv(1024))
 
-        print(repr(f"{new_data['sender']}: {new_data['text']};"))
+        for message in messages:
+            print(repr(f"{message['sender']}: {message['text']};"))
