@@ -27,18 +27,15 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         latest_message = pickle.loads(self.request.recv(1024).strip())
         sender = latest_message["sender"]
         if latest_message["is_service"] and latest_message["msg"] == "get_update":
-            if sender in LATEST_MSG_IDX_BY_SENDER:
-                messages = pickle.dumps(
-                    MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender]:]
-                )
-            else:
-                messages = pickle.dumps([])
-            self.request.sendall(messages)
             self.update_counters(sender, update_for_all=False)
+            messages = pickle.dumps(
+                MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender]-1:]
+            )
+            self.request.sendall(messages)
 
         elif not latest_message["is_service"]:
             MSG_LOG.append(latest_message)
-            self.update_counters(sender)
+            self.update_counters(sender, update_for_all=False)
 
             print("{} wrote: {}".format(sender, latest_message["msg"]))
 
