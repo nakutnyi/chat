@@ -2,7 +2,7 @@ import pickle
 import argparse
 import socket
 
-HOST = '18.153.59.216'  # The server's hostname or IP address
+HOST = '18.184.170.176'  # The server's hostname or IP address
 PORT = 443        # The port used by the server
 
 

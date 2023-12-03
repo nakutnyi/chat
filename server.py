@@ -40,7 +40,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
 
 if __name__ == '__main__':
-    HOST = "127.0.0.1"
+    HOST = "172.31.26.109"
     PORT = 443
 
     server = socketserver.ThreadingTCPServer((HOST, PORT), MyTCPHandler)
