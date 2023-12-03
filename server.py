@@ -2,6 +2,11 @@ import pickle
 import socketserver
 
 
+HOST = "172.31.26.109"
+PORT = 443
+# HOST = "127.0.0.1"
+# PORT = 4321
+
 MSG_LOG = []
 LATEST_MSG_IDX_BY_SENDER = {}
 
@@ -22,9 +27,13 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         latest_message = pickle.loads(self.request.recv(1024).strip())
         sender = latest_message["sender"]
         if latest_message["is_service"] and latest_message["msg"] == "get_update":
-            messages = pickle.dumps(
-                MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender] - 1:]
-            )
+            print("service message received")
+            if sender in LATEST_MSG_IDX_BY_SENDER:
+                messages = pickle.dumps(
+                    MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender]:]
+                )
+            else:
+                messages = pickle.dumps([])
             self.request.sendall(messages)
 
         elif not latest_message["is_service"]:
@@ -35,8 +44,6 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
 
 if __name__ == "__main__":
-    HOST = "172.31.26.109"
-    PORT = 443
     print("Server started")
 
     server = socketserver.ThreadingTCPServer((HOST, PORT), MyTCPHandler)
