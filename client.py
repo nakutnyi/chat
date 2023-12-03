@@ -17,9 +17,9 @@ args = parser.parse_args()
 while True:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
-        mes = input('Your message: ')
+        msg = input('Your message: ')
 
-        data = pickle.dumps({'text': mes, 'sender': args.name})
+        data = pickle.dumps({'text': msg, 'sender': args.name})
         s.sendall(data)
         messages = pickle.loads(s.recv(1024))
 
