@@ -36,7 +36,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             if LATEST_MSG_IDX_BY_SENDER.get(sender) == MSG_COUNTER:
                 return
             messages = []
-            for msg in MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender]:]:
+            for msg in MSG_LOG[LATEST_MSG_IDX_BY_SENDER.get(sender, 0):]:
                 if msg["sender"] != sender:
                     messages.append(msg)
             self.request.sendall(pickle.dumps(messages))
