@@ -21,17 +21,17 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         # self.request is the TCP socket connected to the client
         latest_message = pickle.loads(self.request.recv(1024).strip())
         sender = latest_message["sender"]
-        MSG_LOG.append(latest_message)
-        current_counter = LATEST_MSG_IDX_BY_SENDER.get(sender, 0)
-        LATEST_MSG_IDX_BY_SENDER[sender] = current_counter + 1
-        print("{} wrote: {}".format(sender, latest_message["text"]))
+        if latest_message["is_service"] and latest_message["msg"] == "get_update":
+            messages = pickle.dumps(
+                MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender] - 1:]
+            )
+            self.request.sendall(messages)
 
-        # just send back the same data, but upper-cased
-
-        messages = pickle.dumps(
-            MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender] - 1:]
-        )
-        self.request.sendall(messages)
+        elif not latest_message["is_service"]:
+            MSG_LOG.append(latest_message)
+            current_counter = LATEST_MSG_IDX_BY_SENDER.get(sender, 0)
+            LATEST_MSG_IDX_BY_SENDER[sender] = current_counter + 1
+            print("{} wrote: {}".format(sender, latest_message["msg"]))
 
 
 if __name__ == "__main__":
