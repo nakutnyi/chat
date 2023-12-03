@@ -50,6 +50,7 @@ def pusher():
 
 
 if __name__ == "__main__":
+    print("client started")
     picker_thread = threading.Thread(target=picker)
     pusher_thread = threading.Thread(target=pusher)
 
