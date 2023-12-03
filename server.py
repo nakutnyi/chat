@@ -11,13 +11,10 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     client.
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.data = []
-        self.latest_msg_idx_by_sender = {}
-        self.messages_counter = 0
-
     def handle(self):
+        self.data = getattr(self, "data", [])
+        self.latest_msg_idx_by_sender = getattr(self, "latest_msg_idx_by_sender", {})
+        self.messages_counter = getattr(self, "messages_counter", 0)
         # self.request is the TCP socket connected to the client
         latest_message = pickle.loads(self.request.recv(1024).strip())
         sender = latest_message["sender"]
