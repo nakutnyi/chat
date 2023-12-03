@@ -36,16 +36,21 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             else:
                 messages = pickle.dumps([])
             self.request.sendall(messages)
+            self.update_counters(sender)
 
         elif not latest_message["is_service"]:
             MSG_LOG.append(latest_message)
-            current_user_counter = LATEST_MSG_IDX_BY_SENDER.get(sender, 0)
-            LATEST_MSG_IDX_BY_SENDER[sender] = current_user_counter
-            keys = list(LATEST_MSG_IDX_BY_SENDER)
-            for sender in keys:
-                LATEST_MSG_IDX_BY_SENDER[sender] += 1
+            self.update_counters(sender)
 
             print("{} wrote: {}".format(sender, latest_message["msg"]))
+
+    @staticmethod
+    def update_counters(sender):
+        current_user_counter = LATEST_MSG_IDX_BY_SENDER.get(sender, 0)
+        LATEST_MSG_IDX_BY_SENDER[sender] = current_user_counter
+        keys = list(LATEST_MSG_IDX_BY_SENDER)
+        for sender in keys:
+            LATEST_MSG_IDX_BY_SENDER[sender] += 1
 
 
 if __name__ == "__main__":
