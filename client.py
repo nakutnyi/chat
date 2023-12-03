@@ -2,8 +2,8 @@ import pickle
 import argparse
 import socket
 
-HOST = '127.0.0.1'  # The server's hostname or IP address
-PORT = 65432        # The port used by the server
+HOST = '18.153.59.216'  # The server's hostname or IP address
+PORT = 443        # The port used by the server
 
 
 parser = argparse.ArgumentParser()
