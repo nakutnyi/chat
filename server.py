@@ -25,14 +25,10 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         global MSG_LOG
         global MSG_COUNTER
         global LATEST_MSG_IDX_BY_SENDER
-        # self.request is the TCP socket connected to the client
+
         latest_message = pickle.loads(self.request.recv(1024).strip())
         sender = latest_message["sender"]
         if latest_message["is_service"] and latest_message["msg"] == "get_update":
-            print(f"Update requested from sender {sender}")
-            print(LATEST_MSG_IDX_BY_SENDER)
-            print(MSG_LOG)
-            print(MSG_COUNTER)
             messages = []
             if LATEST_MSG_IDX_BY_SENDER.get(sender) != MSG_COUNTER:
                 for msg in MSG_LOG[LATEST_MSG_IDX_BY_SENDER.get(sender, 0):]:

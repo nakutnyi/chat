@@ -36,7 +36,7 @@ def picker():
             messages = pickle.loads(sock.recv(1024))
 
             for message in messages:
-                print(repr(f"{message['sender']}: {message['msg']};"))
+                print(f"{message['sender']}: {message['msg']}")
         time.sleep(2)
 
 
