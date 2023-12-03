@@ -38,9 +38,12 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
         elif not latest_message["is_service"]:
             MSG_LOG.append(latest_message)
-            keys = list(LATEST_MSG_IDX_BY_SENDER.keys())
-            for key in keys:
-                LATEST_MSG_IDX_BY_SENDER[key] += 1
+            current_user_counter = LATEST_MSG_IDX_BY_SENDER.get(sender, 0)
+            LATEST_MSG_IDX_BY_SENDER[sender] = current_user_counter
+            keys = list(LATEST_MSG_IDX_BY_SENDER)
+            for sender in keys:
+                LATEST_MSG_IDX_BY_SENDER[sender] += 1
+
             print("{} wrote: {}".format(sender, latest_message["msg"]))
 
 
