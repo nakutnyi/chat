@@ -1,4 +1,3 @@
-from copy import copy
 import pickle
 import socketserver
 
@@ -39,7 +38,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
         elif not latest_message["is_service"]:
             MSG_LOG.append(latest_message)
-            keys = copy(LATEST_MSG_IDX_BY_SENDER.keys())
+            keys = list(LATEST_MSG_IDX_BY_SENDER.keys())
             for key in keys:
                 LATEST_MSG_IDX_BY_SENDER[key] += 1
             print("{} wrote: {}".format(sender, latest_message["msg"]))
