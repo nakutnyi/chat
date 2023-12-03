@@ -36,7 +36,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             else:
                 messages = pickle.dumps([])
             self.request.sendall(messages)
-            self.update_counters(sender)
+            LATEST_MSG_IDX_BY_SENDER[sender] += len(messages)
 
         elif not latest_message["is_service"]:
             MSG_LOG.append(latest_message)
