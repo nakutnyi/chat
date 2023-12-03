@@ -8,6 +8,7 @@ PORT = 443
 # PORT = 4321
 
 MSG_LOG = []
+MSG_COUNTER = len(MSG_LOG)
 LATEST_MSG_IDX_BY_SENDER = {}
 
 
@@ -22,33 +23,26 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
         global MSG_LOG
+        global MSG_COUNTER
         global LATEST_MSG_IDX_BY_SENDER
         # self.request is the TCP socket connected to the client
         latest_message = pickle.loads(self.request.recv(1024).strip())
         sender = latest_message["sender"]
         if latest_message["is_service"] and latest_message["msg"] == "get_update":
-            self.update_counters(sender, update_for_all=False)
-            messages = pickle.dumps(
-                MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender]-1:]
-            )
-            self.request.sendall(messages)
+            if LATEST_MSG_IDX_BY_SENDER[sender] == MSG_COUNTER:
+                return
+            messages = []
+            for msg in MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender]:]:
+                if msg["sender"] != sender:
+                    messages.append(msg)
+            self.request.sendall(pickle.dumps(messages))
+            LATEST_MSG_IDX_BY_SENDER[sender] = MSG_COUNTER
 
         elif not latest_message["is_service"]:
+            MSG_COUNTER += 1
             MSG_LOG.append(latest_message)
-            self.update_counters(sender, update_for_all=False)
 
             print("{} wrote: {}".format(sender, latest_message["msg"]))
-
-    @staticmethod
-    def update_counters(sender, update_for_all=True):
-        current_user_counter = LATEST_MSG_IDX_BY_SENDER.get(sender, 0)
-        LATEST_MSG_IDX_BY_SENDER[sender] = current_user_counter
-        if update_for_all:
-            keys = list(LATEST_MSG_IDX_BY_SENDER)
-        else:
-            keys = [sender]
-        for sender in keys:
-            LATEST_MSG_IDX_BY_SENDER[sender] += 1
 
 
 if __name__ == "__main__":
