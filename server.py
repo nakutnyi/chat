@@ -29,14 +29,14 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
         # just send back the same data, but upper-cased
 
-        messages = self.data[self.latest_msg_idx_by_sender[sender]:]
+        messages = pickle.dumps(
+            self.data[self.latest_msg_idx_by_sender[sender]:]
+        )
         self.request.sendall(messages)
 
 
 if __name__ == "__main__":
-    # HOST = "172.31.26.109"
-    # PORT = 443
-    HOST = "127.0.0.1"
+    HOST = "172.31.26.109"
     PORT = 443
     print("Server started")
 

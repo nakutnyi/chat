@@ -4,12 +4,9 @@ import socket
 import getpass
 
 
-# HOST = '18.184.170.176'  # The server's hostname or IP address
-# PORT = 443        # The port used by the server
-HOST = "127.0.0.1"
-PORT = 443
+HOST = '18.184.170.176'  # The server's hostname or IP address
+PORT = 443        # The port used by the server
 USERNAME = getpass.getuser()
-
 
 
 parser = argparse.ArgumentParser()
