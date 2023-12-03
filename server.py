@@ -43,7 +43,7 @@ if __name__ == '__main__':
     HOST = "127.0.0.1"
     PORT = 65432
 
-    server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
+    server = socketserver.ThreadingTCPServer((HOST, PORT), MyTCPHandler)
 
     # Activate the server; this will keep running until you
     # interrupt the program with Ctrl-C

@@ -16,7 +16,7 @@ while True:
         mes = input('Your message: ')
 
         data = pickle.dumps({'text': mes, 'sender': args.name})
-        # print('my data', pickle.loads(data))
+        print('my data', pickle.loads(data))
         s.sendall(data)
         data = s.recv(1024)
         new_data = pickle.loads(data)
