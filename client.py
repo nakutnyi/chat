@@ -1,14 +1,21 @@
 import pickle
 import argparse
 import socket
+import getpass
 
-HOST = '18.184.170.176'  # The server's hostname or IP address
-PORT = 443        # The port used by the server
+
+# HOST = '18.184.170.176'  # The server's hostname or IP address
+# PORT = 443        # The port used by the server
+HOST = "127.0.0.1"
+PORT = 443
+USERNAME = getpass.getuser()
+
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--name", default=1)
+parser.add_argument("-n", "--name", default=USERNAME)
 args = parser.parse_args()
+
 
 while True:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -16,7 +23,6 @@ while True:
         mes = input('Your message: ')
 
         data = pickle.dumps({'text': mes, 'sender': args.name})
-        print('my data', pickle.loads(data))
         s.sendall(data)
         data = s.recv(1024)
         new_data = pickle.loads(data)

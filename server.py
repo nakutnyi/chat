@@ -11,17 +11,32 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     client.
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.data = []
+        self.latest_msg_idx_by_sender = {}
+        self.messages_counter = 0
+
     def handle(self):
         # self.request is the TCP socket connected to the client
-        self.data = pickle.loads(self.request.recv(1024).strip())
-        print("{} wrote:".format(self.data["sender"]), self.data["text"])
+        latest_message = pickle.loads(self.request.recv(1024).strip())
+        sender = latest_message["sender"]
+        self.data.append(latest_message)
+        self.messages_counter += 1
+        current_counter = self.latest_msg_idx_by_sender.get(sender, 0)
+        self.latest_msg_idx_by_sender = current_counter + 1
+        print("{} wrote: {}".format(sender, latest_message["text"]))
 
         # just send back the same data, but upper-cased
-        self.request.sendall(pickle.dumps(self.data))
+
+        messages = self.data[self.latest_msg_idx_by_sender[sender]:]
+        self.request.sendall(messages)
 
 
 if __name__ == "__main__":
-    HOST = "172.31.26.109"
+    # HOST = "172.31.26.109"
+    # PORT = 443
+    HOST = "127.0.0.1"
     PORT = 443
     print("Server started")
 
