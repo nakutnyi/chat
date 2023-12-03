@@ -33,7 +33,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             print(LATEST_MSG_IDX_BY_SENDER)
             print(MSG_LOG)
             print(MSG_COUNTER)
-            if LATEST_MSG_IDX_BY_SENDER[sender] == MSG_COUNTER:
+            if LATEST_MSG_IDX_BY_SENDER.get(sender) == MSG_COUNTER:
                 return
             messages = []
             for msg in MSG_LOG[LATEST_MSG_IDX_BY_SENDER[sender]:]:
