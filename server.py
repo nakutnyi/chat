@@ -2,7 +2,7 @@ import pickle
 import socketserver
 
 
-DATA = []
+MSG_LOG = []
 
 
 class MyTCPHandler(socketserver.BaseRequestHandler):
@@ -15,13 +15,13 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     """
 
     def handle(self):
-        global DATA
+        global MSG_LOG
         self.latest_msg_idx_by_sender = getattr(self, "latest_msg_idx_by_sender", {})
         self.messages_counter = getattr(self, "messages_counter", 0)
         # self.request is the TCP socket connected to the client
         latest_message = pickle.loads(self.request.recv(1024).strip())
         sender = latest_message["sender"]
-        DATA.append(latest_message)
+        MSG_LOG.append(latest_message)
         self.messages_counter += 1
         current_counter = self.latest_msg_idx_by_sender.get(sender, 0)
         self.latest_msg_idx_by_sender[sender] = current_counter + 1
@@ -30,7 +30,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         # just send back the same data, but upper-cased
 
         messages = pickle.dumps(
-            DATA[self.latest_msg_idx_by_sender[sender]-1:]
+            MSG_LOG[self.latest_msg_idx_by_sender[sender] - 1:]
         )
         self.request.sendall(messages)
 
