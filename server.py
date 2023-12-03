@@ -45,6 +45,8 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     @staticmethod
     def update_counters(sender, update_for_all=True):
         current_user_counter = LATEST_MSG_IDX_BY_SENDER.get(sender, 0)
+        if not update_for_all:
+            current_user_counter += 1
         LATEST_MSG_IDX_BY_SENDER[sender] = current_user_counter
         if not update_for_all:
             return
