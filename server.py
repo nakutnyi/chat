@@ -26,7 +26,14 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         global MSG_COUNTER
         global LATEST_MSG_IDX_BY_SENDER
 
-        latest_message = pickle.loads(self.request.recv(1024))
+        try:
+            received = self.request.recv(1024)
+            latest_message = pickle.loads(received)
+        except EOFError:
+            latest_message = {
+                "sender": "system", "is_service": True, "msg": "control_flow"
+            }
+            print(received)
         sender = latest_message["sender"]
         if latest_message["is_service"] and latest_message["msg"] == "get_update":
             messages = []
