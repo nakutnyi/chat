@@ -29,7 +29,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         try:
             received = self.request.recv(1024)
             latest_message = pickle.loads(received)
-        except EOFError:
+        except pickle.UnpicklingError:
             latest_message = {
                 "sender": "system", "is_service": True, "msg": "control_flow"
             }
