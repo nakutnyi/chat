@@ -1,5 +1,6 @@
 import pickle
 import socketserver
+import threading
 
 
 HOST = "172.31.26.109"
@@ -10,6 +11,7 @@ PORT = 443
 MSG_LOG = []
 MSG_COUNTER = len(MSG_LOG)
 LATEST_MSG_IDX_BY_SENDER = {}
+lock = threading.Lock()
 
 
 class MyTCPHandler(socketserver.BaseRequestHandler):
@@ -42,11 +44,15 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                     if msg["sender"] != sender:
                         messages.append(msg)
             self.request.sendall(pickle.dumps(messages))
+            lock.acquire()
             LATEST_MSG_IDX_BY_SENDER[sender] = MSG_COUNTER
+            lock.release()
 
         elif not latest_message["is_service"]:
+            lock.acquire()
             MSG_COUNTER += 1
             MSG_LOG.append(latest_message)
+            lock.release()
 
             print("{} wrote: {}".format(sender, latest_message["msg"]))
 
